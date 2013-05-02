@@ -2,7 +2,7 @@ Final project for the sage class
 ================================
 Currently I am deciding what I want to do. I have four different research projects for which some coding
 would be useful and I plan to implement one of them. 
-Possible titles: 
+Possible projects: 
 
 1. Billera-Lee polytopes and regularity of stacked triangulations
 2. The combinatorial coalgebra of PS-ear decomposable complexes
@@ -30,3 +30,5 @@ were constructed to classify the family of all face numbers of simplicial polyto
 suitable g-vector (the entries of this vector satisfy some prescribed inequalites) and constructs this polytope as the
 boundary of a line shelling subcomplex of a special cyclic polytope of one dimension higher than the desired dimension. 
 
+Now that we have this polytopes we can produce the stacked triangulation using a simple combinatorial rule (described by 
+(see Nevo-Murai reference) 
