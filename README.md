@@ -6,6 +6,7 @@ One pdf file that introduces the problem, states a conjecture and explains some 
 on sage that contains the code used to produce examples. 
 
 Briefly speaking, the goal of the project is (the precise definitions will be available soon in the pfd file): 
+
 1. Write a function that returns a cyclic polytope of dimension d with n>d vertices.
 2. Write a function that verifies wether a finite integer sequence is a Macaulay sequence.
 3. Write a function that returns a line shelling of a polytope, given the polytope, an interior point and an (approximate) direction
