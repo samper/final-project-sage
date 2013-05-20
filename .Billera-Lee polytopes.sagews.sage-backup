@@ -1,0 +1,53 @@
+︠b6c127e3-5019-4ae0-a0a5-8a8b1741a104︠
+#Computes the canonical binomial decomposition of n given k.
+def decomp(n, k):
+    list=[]
+    if k==0 or n <=0:
+        return []
+    elif k == 1:
+        list.append([n,1])
+    else:
+        stop = false
+        a = k-1
+        while not stop:
+            if binomial(a+1, k) > n:
+                list.append([a,k])
+
+                list.extend(decomp(n-binomial(a, k), k-1))
+                stop = true
+            else:
+                a+=1
+
+
+    return list
+#This computes the k-th shadow operator of n.
+def shadow_op(n,k):
+    if n < k:
+        return 0
+    sum = 0
+    list = decomp(n,k)
+    for i in range(len(list)):
+        sum += binomial(list[i][0]-1,list[i][1]-1)
+    return sum
+
+# This function verifies if a list of integers is an M-sequence, or equivalently, if it is the g-vector of a simplicial polytope.
+def is_M_sequence(list):
+    if not list[0] == 1:
+        return False
+    for i in range(len(list)-1):
+        if i == 0:
+            if list[i+1]<0:
+                return False
+
+        else:
+            if shadow_op(list[i+1], i+1) > list[i]:
+                return False
+
+
+    return True
+︡97aa8aee-6a7a-45eb-ab8b-3cd61934d473︡
+︠6a089b0c-7368-41c0-9a7e-785dd3bab053︠
+is_M_sequence([1,23,45,34])
+︡4139841c-0c93-450a-b751-8ecf15595676︡{"stdout":"True\n"}︡
+︠eb2dbb54-ef9f-49cd-b6eb-ae90c8107af2︠
+
