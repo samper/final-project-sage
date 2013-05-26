@@ -45,17 +45,17 @@ def is_M_sequence(list):
 
 
     return True
-︡8ef4cb73-238d-43c7-a0ed-3b30bfeb3110︡
+︡d46c3b03-bcf4-4432-ae99-2a0503c0f3b5︡
 ︠6a089b0c-7368-41c0-9a7e-785dd3bab053︠
 is_M_sequence([1,23,45,34])
 ︡bb62279d-2a5e-476e-8d28-ec51b081e680︡{"stdout":"True\n"}︡
 ︠35fbf10c-5b62-489a-b006-9793a1a1ce35︠
-dim=8
-numVerts=30
+dim=4
+numVerts=15
 Q = polytopes.cyclic_polytope(dim,numVerts)
 type(Q.vertices_list()[0])
 
-︡e0a851c2-1f4c-4945-ac56-cf89b397d0c8︡{"stdout":"<type 'list'>\n"}︡
+︡a2cecad2-76a9-44fe-b698-ff0ccc4274af︡{"stdout":"<type 'list'>\n"}︡
 ︠44bf6803-9bd4-468a-bcb8-7e5366176d90︠
 # Now we start with line shellings.
 # This returns the scalar distance in the randomDirection from the affine plane to the point.
@@ -70,21 +70,29 @@ def find_facet_vertices(inequality,homoVertices):
             facetVertices.append(homoVertices[i][1:])
     return facetVertices
 
-# This function re
+def is_this_working(P):
+    return P.dim()
+
+# This function calculates the line shelling
+# with direction of the outward pointing normal vector from the 0th facet
+# plus a small random vector.
 def line_shelling(P, k):
+    dim=P.dim()
     homoVerts=P.vertices_list()[:]
     for i in range(len(homoVerts)):
         homoVerts[i].insert(0,1)
 
-    startingFacet=find_facet_vertices(P.inequalities()[0],homoVerts)
+    startingFacet=find_facet_vertices(P.inequalities_list()[0],homoVerts)
     startingPoint=reduce(lambda a, b: [a[i]+b[i] for i in range(len(a))],startingFacet)
     startingPoint=[startingPoint[i]/len(startingFacet) for i in range(len(startingPoint))]
     startingPoint.insert(0,1)
     perturbationVector=[ZZ.random_element(90,110)/1001 for i in range(dim+1)]
-    directionVector=[perturbationVector[i]+P.inequalities()[0][i] for i in range(dim+1)]
+    directionVector=[perturbationVector[i]-P.inequalities_list()[0][i] for i in range(dim+1)]
+
     ShellingOrder=[]
-    for i in range(len(P.inequalities())):
-        ShellingOrder.append([P.inequalities()[i],find_facet_vertices(P.inequalities()[i],homoVerts),find_intersection(startingPoint,directionVector,P.inequalities()[i])])
+    for i in range(len(P.inequalities_list())):
+        ShellingOrder.append([P.inequalities_list()[i],
+                              find_facet_vertices(P.inequalities_list()[i],homoVerts),find_intersection(startingPoint,directionVector,P.inequalities_list()[i])])
     ShellingOrder.sort(key=lambda x: x[2])
     iter=ShellingOrder[0][2]
     while iter<0:
@@ -96,10 +104,11 @@ def line_shelling(P, k):
 
     return [ShellingOrder[i][1] for i in range(len(ShellingOrder))]
 
-︡aca36ef0-23de-4651-b428-45ac46dc899b︡
-︠ac7879e3-c0a8-473f-ac63-396439106d62︠
+Q=polytopes.cyclic_polytope(4,12)
+line_shelling(Q,5)
 
-︡8a0d6630-c3ad-4c9d-8e59-8d2ab48fb33b︡
+
+︡79bb9629-77d8-40dd-9bb2-fca73d68e723︡{"stdout":"[0, -6, 11, -6, 1]\n[[[0, 0, 0, 0], [1, 1, 1, 1], [2, 4, 8, 16], [3, 9, 27, 81]], [[0, 0, 0, 0], [1, 1, 1, 1], [3, 9, 27, 81], [4, 16, 64, 256]], [[1, 1, 1, 1], [2, 4, 8, 16], [3, 9, 27, 81], [4, 16, 64, 256]], [[1, 1, 1, 1], [2, 4, 8, 16], [4, 16, 64, 256], [5, 25, 125, 625]], [[0, 0, 0, 0], [1, 1, 1, 1], [4, 16, 64, 256], [5, 25, 125, 625]]]"}︡
 ︠aeb4b701-3a74-451b-ba76-0f47d1994c12︠
 #This method computes the g-vector of the boudary of a shelling.Right now it only works for cyclic polytopes (or polytopes whose projection on the first coordinate is injective at the level of vertices).
 def shelling_facets(P,k):
@@ -114,7 +123,7 @@ def shelling_facets(P,k):
     return facets
 
 
-︡61378f7b-3509-4a66-9a8e-ed5af3fe689c︡
+︡d9d432cd-c13d-4f06-9f3e-e2e6b965f87f︡
 ︠79133403-81ee-4681-96c5-e18d8cb0b6ba︠
 #This method computes the boundary complex of a pseudomanifold (we will only use it for d-balls). Since we intent to work with complexes that are guaranteed to be pseudomanifolds this method does NOT check wether the imput facets are the facets of a pseudomanifold.
 def boundary(facets):
@@ -149,7 +158,7 @@ boundary(shelling_facets(Q,5))
 ︠8d0f903b-2af3-4f16-b1f0-fa3db1f0788c︠
 boundary([[1,2,3],[2,3,4],[1,3,4]])
 ︡30e25666-11fc-44cc-a697-c72681af3469︡{"stdout":"[[1, 2], [2, 4], [1, 4]]\n"}︡
-︠95c28218-91af-45e6-977a-6ddbf1d2ae32r︠
+︠95c28218-91af-45e6-977a-6ddbf1d2ae32︠
 #This method returns the g-vector of the boundary complex of a simplicial ball obtained by truncating a line shelling of a cyclic polytope.
 def shelling_g_vector(P, k):
     Delta = SimplicialComplex(boundary(shelling_facets(P, k)))
