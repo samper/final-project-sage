@@ -61,21 +61,25 @@ def find_facet_vertices(inequality,homoVertices):
             facetVertices.append(homoVertices[i][1:])
     return facetVertices
 
-# This function re
+# This function calculates the line shelling
+# with direction of the outward pointing normal vector from the 0th facet
+# plus a small random vector.
 def line_shelling(P, k):
+    dim=P.dim()
     homoVerts=P.vertices_list()[:]
     for i in range(len(homoVerts)):
         homoVerts[i].insert(0,1)
 
-    startingFacet=find_facet_vertices(P.inequalities()[0],homoVerts)
+    startingFacet=find_facet_vertices(P.inequalities_list()[0],homoVerts)
     startingPoint=reduce(lambda a, b: [a[i]+b[i] for i in range(len(a))],startingFacet)
     startingPoint=[startingPoint[i]/len(startingFacet) for i in range(len(startingPoint))]
     startingPoint.insert(0,1)
     perturbationVector=[ZZ.random_element(90,110)/1001 for i in range(dim+1)]
-    directionVector=[perturbationVector[i]+P.inequalities()[0][i] for i in range(dim+1)]
+    directionVector=[perturbationVector[i]-P.inequalities_list()[0][i] for i in range(dim+1)]
+
     ShellingOrder=[]
-    for i in range(len(P.inequalities())):
-        ShellingOrder.append([P.inequalities()[i],find_facet_vertices(P.inequalities()[i],homoVerts),find_intersection(startingPoint,directionVector,P.inequalities()[i])])
+    for i in range(len(P.inequalities_list())):
+        ShellingOrder.append([P.inequalities_list()[i],find_facet_vertices(P.inequalities_list()[i],homoVerts),find_intersection(startingPoint,directionVector,P.inequalities_list()[i])])
     ShellingOrder.sort(key=lambda x: x[2])
     iter=ShellingOrder[0][2]
     while iter<0:
@@ -87,6 +91,8 @@ def line_shelling(P, k):
 
     return [ShellingOrder[i][1] for i in range(len(ShellingOrder))]
 
+Q=polytopes.cyclic_polytope(4,12)
+line_shelling(Q,5) 
 
 #This method computes the g-vector of the boudary of a shelling.Right now it only works for cyclic polytopes (or polytopes whose projection on the first coordinate is injective at the level of vertices).
 def shelling_facets(P,k):
