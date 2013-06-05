@@ -89,8 +89,7 @@ def line_shelling(P, k):
 
     return [ShellingOrder[i][1] for i in range(len(ShellingOrder))]
 
-#Q=polytopes.cyclic_polytope(4,12)
-#line_shelling(Q,5)
+
 
 
 #This method computes the g-vector of the boudary of a shelling.Right now it only works for cyclic polytopes (or polytopes whose projection on the first coordinate is injective at the level of vertices).
@@ -137,10 +136,11 @@ def boundary(facets):
           ridges.remove(bad_ridges[i])
     return ridges
 
-boundary([[1,2,3,4],[2,3,4,5],[3,4,5,6]])
 
 
 import itertools
+#This method returns the list of facets of a simplicial ball, whose boundary has the g-vector that we imput and has the dimension passed as a parameter:
+#Warning: For this to properly work we need and not print an exeption the dimension and the g-vector have to be compatible: i.e it must have
 def ball_constructor(g_vector, dimension):
     if not is_M_sequence(g_vector) or (dimension != 2*len(g_vector)-1 and dimension != 2*len(g_vector)-2):
         print "Invalid input"
@@ -197,20 +197,45 @@ def ball_constructor(g_vector, dimension):
 
     return final_list
 
+#This generates rational cyclic polytopes. It takes as imput the dimension, and a set of base points on the moment curve.
+def rational_cyclic_polytope(dimension, base_points):
+    vertex_set = [[i^j for j in range(1,dimension+1)] for i in base_points]
+    return Polyhedron(vertices = vertex_set)
 
-#revlex_list_sort([5,1,3,4],[6,0,3,4])
-#Combinations(range(1,10),2).list()
-#subsets_of_list(range(1,10),1)
-ball = ball_constructor([1,9,13,0,0], 8)
-delta = SimplicialComplex(ball)
-delta_skel = delta.n_skeleton(7-3)
-delta_skel
-# boundary(ball_constructor([1,9,20,10], 8))
-gamma= SimplicialComplex(boundary(ball))
-#gamma.g_vector()
-gamma_skel = gamma.n_skeleton(7-3)
-gamma_skel
-︡d624642b-0497-4e65-8efd-ab3ba5c5b14b︡{"stdout":"[[1, 3, 4], [1, 2, 4], [1, 2, 3], [2, 4, 5], [2, 3, 5], [4, 5, 6], [3, 5, 6], [3, 4, 6]]\nSimplicial complex with 18 vertices and 1211 facets\nSimplicial complex with 18 vertices and 1211 facets\n"}︡
+
+︡a25e4dbf-b828-4aad-9c02-a9d17528d9d5︡{"stdout":"A 4-dimensional polyhedron in RDF^4 defined as the convex hull of 6 vertices\n"}︡
+︠ea6a4b92-0f6a-4624-965e-2f1caec5fe54︠
+Q = polytopes.cyclic_polytope(5, 11)
+show(line_shelling(Q,10))
+facets = shelling_facets(Q,10)
+show(facets)
+show(SimplicialComplex(facets))
+show(shelling_g_vector(Q,10))
+︡b7dfcfd1-05a8-4495-bf7f-3018d3eae515︡{"tex":{"tex":"\\left[\\left[\\left[0, 0, 0, 0, 0\\right], \\left[1, 1, 1, 1, 1\\right], \\left[2, 4, 8, 16, 32\\right], \\left[3, 9, 27, 81, 243\\right], \\left[4, 16, 64, 256, 1024\\right]\\right], \\left[\\left[0, 0, 0, 0, 0\\right], \\left[1, 1, 1, 1, 1\\right], \\left[2, 4, 8, 16, 32\\right], \\left[4, 16, 64, 256, 1024\\right], \\left[5, 25, 125, 625, 3125\\right]\\right], \\left[\\left[0, 0, 0, 0, 0\\right], \\left[2, 4, 8, 16, 32\\right], \\left[3, 9, 27, 81, 243\\right], \\left[4, 16, 64, 256, 1024\\right], \\left[5, 25, 125, 625, 3125\\right]\\right], \\left[\\left[0, 0, 0, 0, 0\\right], \\left[2, 4, 8, 16, 32\\right], \\left[3, 9, 27, 81, 243\\right], \\left[5, 25, 125, 625, 3125\\right], \\left[6, 36, 216, 1296, 7776\\right]\\right], \\left[\\left[0, 0, 0, 0, 0\\right], \\left[2, 4, 8, 16, 32\\right], \\left[3, 9, 27, 81, 243\\right], \\left[6, 36, 216, 1296, 7776\\right], \\left[7, 49, 343, 2401, 16807\\right]\\right], \\left[\\left[0, 0, 0, 0, 0\\right], \\left[3, 9, 27, 81, 243\\right], \\left[4, 16, 64, 256, 1024\\right], \\left[5, 25, 125, 625, 3125\\right], \\left[6, 36, 216, 1296, 7776\\right]\\right], \\left[\\left[0, 0, 0, 0, 0\\right], \\left[2, 4, 8, 16, 32\\right], \\left[3, 9, 27, 81, 243\\right], \\left[7, 49, 343, 2401, 16807\\right], \\left[8, 64, 512, 4096, 32768\\right]\\right], \\left[\\left[0, 0, 0, 0, 0\\right], \\left[3, 9, 27, 81, 243\\right], \\left[4, 16, 64, 256, 1024\\right], \\left[6, 36, 216, 1296, 7776\\right], \\left[7, 49, 343, 2401, 16807\\right]\\right], \\left[\\left[0, 0, 0, 0, 0\\right], \\left[2, 4, 8, 16, 32\\right], \\left[3, 9, 27, 81, 243\\right], \\left[8, 64, 512, 4096, 32768\\right], \\left[9, 81, 729, 6561, 59049\\right]\\right], \\left[\\left[0, 0, 0, 0, 0\\right], \\left[3, 9, 27, 81, 243\\right], \\left[4, 16, 64, 256, 1024\\right], \\left[7, 49, 343, 2401, 16807\\right], \\left[8, 64, 512, 4096, 32768\\right]\\right]\\right]","display":true}}︡{"tex":{"tex":"\\left[\\left[0, 1, 2, 3, 4\\right], \\left[0, 1, 2, 4, 5\\right], \\left[0, 2, 3, 4, 5\\right], \\left[0, 2, 3, 5, 6\\right], \\left[0, 2, 3, 6, 7\\right], \\left[0, 3, 4, 5, 6\\right], \\left[0, 2, 3, 7, 8\\right], \\left[0, 3, 4, 6, 7\\right], \\left[0, 2, 3, 8, 9\\right], \\left[0, 3, 4, 7, 8\\right]\\right]","display":true}}︡{"tex":{"tex":"\\verb|Simplicial|\\phantom{\\verb!x!}\\verb|complex|\\phantom{\\verb!x!}\\verb|with|\\phantom{\\verb!x!}\\verb|10|\\phantom{\\verb!x!}\\verb|vertices|\\phantom{\\verb!x!}\\verb|and|\\phantom{\\verb!x!}\\verb|10|\\phantom{\\verb!x!}\\verb|facets|","display":true}}︡{"tex":{"tex":"\\left[1, 5, 4\\right]","display":true}}︡
 ︠852e3e67-6657-4cf3-a259-b9d803e641b8i︠
+Q=polytopes.cyclic_polytope(4,12)
+show(line_shelling(Q,5))
+complex_1 = shelling_facets(Q,5)
+show(complex_1)
+show(SimplicialComplex(complex_1))
+
+ball = ball_constructor([1,12,20,30,10], 8)
+delta = SimplicialComplex(ball)
+show(delta)
+boundary_complex =SimplicialComplex(boundary(ball))
+show(boundary_complex)
+show(boundary_complex.g_vector())
+
+︡cef6f078-8fae-4e23-b9db-5368aa38f2ea︡{"tex":{"tex":"\\left[\\left[\\left[0, 0, 0, 0\\right], \\left[1, 1, 1, 1\\right], \\left[2, 4, 8, 16\\right], \\left[3, 9, 27, 81\\right]\\right], \\left[\\left[0, 0, 0, 0\\right], \\left[1, 1, 1, 1\\right], \\left[3, 9, 27, 81\\right], \\left[4, 16, 64, 256\\right]\\right], \\left[\\left[1, 1, 1, 1\\right], \\left[2, 4, 8, 16\\right], \\left[3, 9, 27, 81\\right], \\left[4, 16, 64, 256\\right]\\right], \\left[\\left[1, 1, 1, 1\\right], \\left[2, 4, 8, 16\\right], \\left[4, 16, 64, 256\\right], \\left[5, 25, 125, 625\\right]\\right], \\left[\\left[0, 0, 0, 0\\right], \\left[1, 1, 1, 1\\right], \\left[4, 16, 64, 256\\right], \\left[5, 25, 125, 625\\right]\\right]\\right]","display":true}}︡{"tex":{"tex":"\\left[\\left[0, 1, 2, 3\\right], \\left[0, 1, 3, 4\\right], \\left[1, 2, 3, 4\\right], \\left[1, 2, 4, 5\\right], \\left[0, 1, 4, 5\\right]\\right]","display":true}}︡{"tex":{"tex":"\\verb|Simplicial|\\phantom{\\verb!x!}\\verb|complex|\\phantom{\\verb!x!}\\verb|with|\\phantom{\\verb!x!}\\verb|vertex|\\phantom{\\verb!x!}\\verb|set|\\phantom{\\verb!x!}\\verb|(0,|\\phantom{\\verb!x!}\\verb|1,|\\phantom{\\verb!x!}\\verb|2,|\\phantom{\\verb!x!}\\verb|3,|\\phantom{\\verb!x!}\\verb|4,|\\phantom{\\verb!x!}\\verb|5)|\\phantom{\\verb!x!}\\verb|and|\\phantom{\\verb!x!}\\verb|5|\\phantom{\\verb!x!}\\verb|facets|","display":true}}︡{"tex":{"tex":"\\verb|Simplicial|\\phantom{\\verb!x!}\\verb|complex|\\phantom{\\verb!x!}\\verb|with|\\phantom{\\verb!x!}\\verb|21|\\phantom{\\verb!x!}\\verb|vertices|\\phantom{\\verb!x!}\\verb|and|\\phantom{\\verb!x!}\\verb|73|\\phantom{\\verb!x!}\\verb|facets|","display":true}}︡{"tex":{"tex":"\\verb|Simplicial|\\phantom{\\verb!x!}\\verb|complex|\\phantom{\\verb!x!}\\verb|with|\\phantom{\\verb!x!}\\verb|21|\\phantom{\\verb!x!}\\verb|vertices|\\phantom{\\verb!x!}\\verb|and|\\phantom{\\verb!x!}\\verb|293|\\phantom{\\verb!x!}\\verb|facets|","display":true}}︡{"tex":{"tex":"\\left[1, 12, 20, 30, 10\\right]","display":true}}︡
 ︠953a70d9-2e21-4a42-89fc-53ef910328d5︠
+ball = ball_constructor([1,12,20,0,0], 8)
+beta = SimplicialComplex(ball)
+show(beta)
+beta_skel = beta.n_skeleton(7-3)
+show(beta_skel)
+gamma= SimplicialComplex(boundary(ball))
+gamma_skel = gamma.n_skeleton(7-3)
+show(gamma_skel)
+︡0ad5b3d4-e680-4613-9777-c3e1b3510c6e︡{"tex":{"tex":"\\verb|Simplicial|\\phantom{\\verb!x!}\\verb|complex|\\phantom{\\verb!x!}\\verb|with|\\phantom{\\verb!x!}\\verb|21|\\phantom{\\verb!x!}\\verb|vertices|\\phantom{\\verb!x!}\\verb|and|\\phantom{\\verb!x!}\\verb|33|\\phantom{\\verb!x!}\\verb|facets|","display":true}}︡{"tex":{"tex":"\\verb|Simplicial|\\phantom{\\verb!x!}\\verb|complex|\\phantom{\\verb!x!}\\verb|with|\\phantom{\\verb!x!}\\verb|21|\\phantom{\\verb!x!}\\verb|vertices|\\phantom{\\verb!x!}\\verb|and|\\phantom{\\verb!x!}\\verb|1666|\\phantom{\\verb!x!}\\verb|facets|","display":true}}︡{"tex":{"tex":"\\verb|Simplicial|\\phantom{\\verb!x!}\\verb|complex|\\phantom{\\verb!x!}\\verb|with|\\phantom{\\verb!x!}\\verb|21|\\phantom{\\verb!x!}\\verb|vertices|\\phantom{\\verb!x!}\\verb|and|\\phantom{\\verb!x!}\\verb|1666|\\phantom{\\verb!x!}\\verb|facets|","display":true}}︡
+︠05736660-bd6f-4070-a8c0-b8be1102b23b︠
 
