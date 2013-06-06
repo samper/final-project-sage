@@ -117,8 +117,7 @@ def line_shelling(P, k, startingPoint, directionVector):
     return [ShellingOrder[i][1] for i in range(len(ShellingOrder))]
 
 
-<<<<<<< HEAD
-=======
+
 #Q=polytopes.cyclic_polytope(4,7)
 #D=generate_starting_point_direction(Q)
 #line_shelling(Q,4,D[0],D[1])
@@ -129,7 +128,6 @@ def line_shelling(P, k, startingPoint, directionVector):
 
 
 
->>>>>>> f6cf5781015ac51b70399241e7f8ba595cae093b
 
 
 #This method computes the g-vector of the boudary of a shelling.Right now it only works for cyclic polytopes (or polytopes whose projection on the first coordinate is injective at the level of vertices).
@@ -176,10 +174,7 @@ def boundary(facets):
           ridges.remove(bad_ridges[i])
     return ridges
 
-<<<<<<< HEAD
-=======
-# boundary([[1,2,3,4],[2,3,4,5],[3,4,5,6]])
->>>>>>> f6cf5781015ac51b70399241e7f8ba595cae093b
+
 
 
 import itertools
@@ -247,15 +242,32 @@ def rational_cyclic_polytope(dimension, base_points):
     return Polyhedron(vertices = vertex_set)
 
 
-︡a25e4dbf-b828-4aad-9c02-a9d17528d9d5︡{"stdout":"A 4-dimensional polyhedron in RDF^4 defined as the convex hull of 6 vertices\n"}︡
+︡4ebdd9dd-9e23-4f18-ae43-0d2b599c07ee︡
 ︠ea6a4b92-0f6a-4624-965e-2f1caec5fe54︠
-Q = polytopes.cyclic_polytope(5, 11)
-show(line_shelling(Q,10))
-facets = shelling_facets(Q,10)
-show(facets)
-show(SimplicialComplex(facets))
-show(shelling_g_vector(Q,10))
-︡b7dfcfd1-05a8-4495-bf7f-3018d3eae515︡{"tex":{"tex":"\\left[\\left[\\left[0, 0, 0, 0, 0\\right], \\left[1, 1, 1, 1, 1\\right], \\left[2, 4, 8, 16, 32\\right], \\left[3, 9, 27, 81, 243\\right], \\left[4, 16, 64, 256, 1024\\right]\\right], \\left[\\left[0, 0, 0, 0, 0\\right], \\left[1, 1, 1, 1, 1\\right], \\left[2, 4, 8, 16, 32\\right], \\left[4, 16, 64, 256, 1024\\right], \\left[5, 25, 125, 625, 3125\\right]\\right], \\left[\\left[0, 0, 0, 0, 0\\right], \\left[2, 4, 8, 16, 32\\right], \\left[3, 9, 27, 81, 243\\right], \\left[4, 16, 64, 256, 1024\\right], \\left[5, 25, 125, 625, 3125\\right]\\right], \\left[\\left[0, 0, 0, 0, 0\\right], \\left[2, 4, 8, 16, 32\\right], \\left[3, 9, 27, 81, 243\\right], \\left[5, 25, 125, 625, 3125\\right], \\left[6, 36, 216, 1296, 7776\\right]\\right], \\left[\\left[0, 0, 0, 0, 0\\right], \\left[2, 4, 8, 16, 32\\right], \\left[3, 9, 27, 81, 243\\right], \\left[6, 36, 216, 1296, 7776\\right], \\left[7, 49, 343, 2401, 16807\\right]\\right], \\left[\\left[0, 0, 0, 0, 0\\right], \\left[3, 9, 27, 81, 243\\right], \\left[4, 16, 64, 256, 1024\\right], \\left[5, 25, 125, 625, 3125\\right], \\left[6, 36, 216, 1296, 7776\\right]\\right], \\left[\\left[0, 0, 0, 0, 0\\right], \\left[2, 4, 8, 16, 32\\right], \\left[3, 9, 27, 81, 243\\right], \\left[7, 49, 343, 2401, 16807\\right], \\left[8, 64, 512, 4096, 32768\\right]\\right], \\left[\\left[0, 0, 0, 0, 0\\right], \\left[3, 9, 27, 81, 243\\right], \\left[4, 16, 64, 256, 1024\\right], \\left[6, 36, 216, 1296, 7776\\right], \\left[7, 49, 343, 2401, 16807\\right]\\right], \\left[\\left[0, 0, 0, 0, 0\\right], \\left[2, 4, 8, 16, 32\\right], \\left[3, 9, 27, 81, 243\\right], \\left[8, 64, 512, 4096, 32768\\right], \\left[9, 81, 729, 6561, 59049\\right]\\right], \\left[\\left[0, 0, 0, 0, 0\\right], \\left[3, 9, 27, 81, 243\\right], \\left[4, 16, 64, 256, 1024\\right], \\left[7, 49, 343, 2401, 16807\\right], \\left[8, 64, 512, 4096, 32768\\right]\\right]\\right]","display":true}}︡{"tex":{"tex":"\\left[\\left[0, 1, 2, 3, 4\\right], \\left[0, 1, 2, 4, 5\\right], \\left[0, 2, 3, 4, 5\\right], \\left[0, 2, 3, 5, 6\\right], \\left[0, 2, 3, 6, 7\\right], \\left[0, 3, 4, 5, 6\\right], \\left[0, 2, 3, 7, 8\\right], \\left[0, 3, 4, 6, 7\\right], \\left[0, 2, 3, 8, 9\\right], \\left[0, 3, 4, 7, 8\\right]\\right]","display":true}}︡{"tex":{"tex":"\\verb|Simplicial|\\phantom{\\verb!x!}\\verb|complex|\\phantom{\\verb!x!}\\verb|with|\\phantom{\\verb!x!}\\verb|10|\\phantom{\\verb!x!}\\verb|vertices|\\phantom{\\verb!x!}\\verb|and|\\phantom{\\verb!x!}\\verb|10|\\phantom{\\verb!x!}\\verb|facets|","display":true}}︡{"tex":{"tex":"\\left[1, 5, 4\\right]","display":true}}︡
+rationals = [i for i in range(15)]
+dimension = 10
+stopping_point = 10
+Q = rational_cyclic_polytope(dimension, rationals)
+temporal= Q.center()
+starting_point = []
+perturbationVector=[ZZ.random_element(90,110)/1001 for i in range(dimension)]
+for i in range(len(temporal)):
+    starting_point.append(temporal[i] + perturbationVector[i] )
+direction = [ZZ.random_element(90,110)/1001 for i in range(dimension)]
+shelling_order = line_shelling(Q, stopping_point, starting_point, direction )
+if not shelling_order == None:
+    abstract_complex = []
+    for i in range(len(shelling_order)):
+        facet = []
+        for j in range(len(shelling_order[i])):
+            facet.append(shelling_order[i][j][0])
+        abstract_complex.append(facet)
+
+    ball = SimplicialComplex(boundary(abstract_complex))
+    ball.h_vector()
+
+
+︡45b25f20-983a-4bd9-84c0-300cb4a870c9︡{"stdout":"[1, 6, 16, 26, 4, 1, 16, 9, 10, 9]"}︡
 ︠852e3e67-6657-4cf3-a259-b9d803e641b8i︠
 Q=polytopes.cyclic_polytope(4,12)
 show(line_shelling(Q,5))
@@ -271,8 +283,6 @@ boundary_complex =SimplicialComplex(boundary(ball))
 show(boundary_complex)
 show(boundary_complex.g_vector())
 
-︡cef6f078-8fae-4e23-b9db-5368aa38f2ea︡{"tex":{"tex":"\\left[\\left[\\left[0, 0, 0, 0\\right], \\left[1, 1, 1, 1\\right], \\left[2, 4, 8, 16\\right], \\left[3, 9, 27, 81\\right]\\right], \\left[\\left[0, 0, 0, 0\\right], \\left[1, 1, 1, 1\\right], \\left[3, 9, 27, 81\\right], \\left[4, 16, 64, 256\\right]\\right], \\left[\\left[1, 1, 1, 1\\right], \\left[2, 4, 8, 16\\right], \\left[3, 9, 27, 81\\right], \\left[4, 16, 64, 256\\right]\\right], \\left[\\left[1, 1, 1, 1\\right], \\left[2, 4, 8, 16\\right], \\left[4, 16, 64, 256\\right], \\left[5, 25, 125, 625\\right]\\right], \\left[\\left[0, 0, 0, 0\\right], \\left[1, 1, 1, 1\\right], \\left[4, 16, 64, 256\\right], \\left[5, 25, 125, 625\\right]\\right]\\right]","display":true}}︡{"tex":{"tex":"\\left[\\left[0, 1, 2, 3\\right], \\left[0, 1, 3, 4\\right], \\left[1, 2, 3, 4\\right], \\left[1, 2, 4, 5\\right], \\left[0, 1, 4, 5\\right]\\right]","display":true}}︡{"tex":{"tex":"\\verb|Simplicial|\\phantom{\\verb!x!}\\verb|complex|\\phantom{\\verb!x!}\\verb|with|\\phantom{\\verb!x!}\\verb|vertex|\\phantom{\\verb!x!}\\verb|set|\\phantom{\\verb!x!}\\verb|(0,|\\phantom{\\verb!x!}\\verb|1,|\\phantom{\\verb!x!}\\verb|2,|\\phantom{\\verb!x!}\\verb|3,|\\phantom{\\verb!x!}\\verb|4,|\\phantom{\\verb!x!}\\verb|5)|\\phantom{\\verb!x!}\\verb|and|\\phantom{\\verb!x!}\\verb|5|\\phantom{\\verb!x!}\\verb|facets|","display":true}}︡{"tex":{"tex":"\\verb|Simplicial|\\phantom{\\verb!x!}\\verb|complex|\\phantom{\\verb!x!}\\verb|with|\\phantom{\\verb!x!}\\verb|21|\\phantom{\\verb!x!}\\verb|vertices|\\phantom{\\verb!x!}\\verb|and|\\phantom{\\verb!x!}\\verb|73|\\phantom{\\verb!x!}\\verb|facets|","display":true}}︡{"tex":{"tex":"\\verb|Simplicial|\\phantom{\\verb!x!}\\verb|complex|\\phantom{\\verb!x!}\\verb|with|\\phantom{\\verb!x!}\\verb|21|\\phantom{\\verb!x!}\\verb|vertices|\\phantom{\\verb!x!}\\verb|and|\\phantom{\\verb!x!}\\verb|293|\\phantom{\\verb!x!}\\verb|facets|","display":true}}︡{"tex":{"tex":"\\left[1, 12, 20, 30, 10\\right]","display":true}}︡
-︠953a70d9-2e21-4a42-89fc-53ef910328d5︠
 ball = ball_constructor([1,12,20,0,0], 8)
 beta = SimplicialComplex(ball)
 show(beta)
@@ -281,7 +291,7 @@ show(beta_skel)
 gamma= SimplicialComplex(boundary(ball))
 gamma_skel = gamma.n_skeleton(7-3)
 show(gamma_skel)
-︡0ad5b3d4-e680-4613-9777-c3e1b3510c6e︡{"tex":{"tex":"\\verb|Simplicial|\\phantom{\\verb!x!}\\verb|complex|\\phantom{\\verb!x!}\\verb|with|\\phantom{\\verb!x!}\\verb|21|\\phantom{\\verb!x!}\\verb|vertices|\\phantom{\\verb!x!}\\verb|and|\\phantom{\\verb!x!}\\verb|33|\\phantom{\\verb!x!}\\verb|facets|","display":true}}︡{"tex":{"tex":"\\verb|Simplicial|\\phantom{\\verb!x!}\\verb|complex|\\phantom{\\verb!x!}\\verb|with|\\phantom{\\verb!x!}\\verb|21|\\phantom{\\verb!x!}\\verb|vertices|\\phantom{\\verb!x!}\\verb|and|\\phantom{\\verb!x!}\\verb|1666|\\phantom{\\verb!x!}\\verb|facets|","display":true}}︡{"tex":{"tex":"\\verb|Simplicial|\\phantom{\\verb!x!}\\verb|complex|\\phantom{\\verb!x!}\\verb|with|\\phantom{\\verb!x!}\\verb|21|\\phantom{\\verb!x!}\\verb|vertices|\\phantom{\\verb!x!}\\verb|and|\\phantom{\\verb!x!}\\verb|1666|\\phantom{\\verb!x!}\\verb|facets|","display":true}}︡
+︡17aa1c14-21bd-44cd-827a-6fdbe0547197︡{"stderr":"Error in lines 2-2\nTraceback (most recent call last):\n  File \"/mnt/home/M5roBTgW/.sagemathcloud/sage_server.py\", line 412, in execute\n    exec compile(block, '', 'single') in namespace, locals\n  File \"\", line 1, in <module>\nTypeError: line_shelling() takes exactly 4 arguments (2 given)\n"}︡
 ︠05736660-bd6f-4070-a8c0-b8be1102b23b︠
 =======
 #revlex_list_sort([5,1,3,4],[6,0,3,4])
@@ -301,7 +311,7 @@ show(gamma_skel)
 
 ︠f74f6ec5-e0b8-4723-b061-506aba0f53df︠
 
-︠852e3e67-6657-4cf3-a259-b9d803e641b8i︠
-︠953a70d9-2e21-4a42-89fc-53ef910328d5︠
->>>>>>> f6cf5781015ac51b70399241e7f8ba595cae093b
+︠773e2e17-565b-49a8-9edf-be6935a0f518i︠
+︠535aeeb0-a08f-4366-91c7-a81b65c53565︠
+
 
