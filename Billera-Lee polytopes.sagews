@@ -48,8 +48,10 @@ def is_M_sequence(list):
 
 # Now we start with line shellings.
 # This returns the scalar distance in the randomDirection from the affine plane to the point.
+# affinePlane is a list of length n+1 where the 0th coordinate defines the intercept.
+# startingPoint and randomDirection are lists of length n
 def find_intersection(startingPoint,randomDirection,affinePlane):
-    return -vector(affinePlane).dot_product(vector(startingPoint))/vector(affinePlane).dot_product(vector(randomDirection))
+    return -(affinePlane[0]+vector(affinePlane[1:]).dot_product(vector(startingPoint)))/vector(affinePlane[1:]).dot_product(vector(randomDirection))
 
 # This function finds the vertices of a facet of a polytope given the inequality that defines it.
 def find_facet_vertices(inequality,homoVertices):
@@ -59,10 +61,11 @@ def find_facet_vertices(inequality,homoVertices):
             facetVertices.append(homoVertices[i][1:])
     return facetVertices
 
-# This function calculates the line shelling
-# with direction of the outward pointing normal vector from the 0th facet
-# plus a small random vector.
-def line_shelling(P, k):
+# This function generates a starting point
+# and direction for a line shelling that is
+# roughly the outward pointing normal from the
+# 0th facet
+def generate_starting_point_direction(P):
     dim=P.dim()
     homoVerts=P.vertices_list()[:]
     for i in range(len(homoVerts)):
@@ -71,25 +74,62 @@ def line_shelling(P, k):
     startingFacet=find_facet_vertices(P.inequalities_list()[0],homoVerts)
     startingPoint=reduce(lambda a, b: [a[i]+b[i] for i in range(len(a))],startingFacet)
     startingPoint=[startingPoint[i]/len(startingFacet) for i in range(len(startingPoint))]
-    startingPoint.insert(0,1)
-    perturbationVector=[ZZ.random_element(90,110)/1001 for i in range(dim+1)]
-    directionVector=[perturbationVector[i]-P.inequalities_list()[0][i] for i in range(dim+1)]
+    perturbationVector=[ZZ.random_element(90,110)/1001 for i in range(dim)]
+    directionVector=[perturbationVector[i]-P.inequalities_list()[0][i+1] for i in range(dim)]
+
+    return [startingPoint, directionVector]
+
+
+# This function calculates the line shelling
+# with direction directionVector and starting point startingPoint
+def line_shelling(P, k, startingPoint, directionVector):
+    genericity_tolerance=.00001
+
+    for j in P.inequalities_list():
+        if abs(vector(j[1:]).dot_product(vector(directionVector))) < genericity_tolerance:
+            print "Genericity of directionVector failed!"
+            return
+
+    dim=P.dim()
+    homoVerts=P.vertices_list()[:]
+    for i in range(len(homoVerts)):
+        homoVerts[i].insert(0,1)
 
     ShellingOrder=[]
     for i in range(len(P.inequalities_list())):
         ShellingOrder.append([P.inequalities_list()[i],find_facet_vertices(P.inequalities_list()[i],homoVerts),find_intersection(startingPoint,directionVector,P.inequalities_list()[i])])
     ShellingOrder.sort(key=lambda x: x[2])
+
+    for i in range(len(ShellingOrder)-1):
+        if (ShellingOrder[i+1][2]-ShellingOrder[i][2]) < genericity_tolerance:
+            print "Genericity of Shelling Order failed!"
+            return
+
     iter=ShellingOrder[0][2]
     while iter<0:
         item=ShellingOrder.pop(0)
         ShellingOrder.append(item)
         iter=ShellingOrder[0][2]
-    if k <= ShellingOrder and k > 0:
+
+    if k <= len(ShellingOrder) and k > 0:
         return [ShellingOrder[i][1] for i in range(k)]
 
     return [ShellingOrder[i][1] for i in range(len(ShellingOrder))]
 
 
+<<<<<<< HEAD
+=======
+#Q=polytopes.cyclic_polytope(4,7)
+#D=generate_starting_point_direction(Q)
+#line_shelling(Q,4,D[0],D[1])
+
+#R=Polyhedron(vertices=[[0,0],[1,0],[0,1],[1,1]])
+#line_shelling(R,4,[0,.5],[-1,.5])
+
+
+
+
+>>>>>>> f6cf5781015ac51b70399241e7f8ba595cae093b
 
 
 #This method computes the g-vector of the boudary of a shelling.Right now it only works for cyclic polytopes (or polytopes whose projection on the first coordinate is injective at the level of vertices).
@@ -136,6 +176,10 @@ def boundary(facets):
           ridges.remove(bad_ridges[i])
     return ridges
 
+<<<<<<< HEAD
+=======
+# boundary([[1,2,3,4],[2,3,4,5],[3,4,5,6]])
+>>>>>>> f6cf5781015ac51b70399241e7f8ba595cae093b
 
 
 import itertools
@@ -219,6 +263,7 @@ complex_1 = shelling_facets(Q,5)
 show(complex_1)
 show(SimplicialComplex(complex_1))
 
+<<<<<<< HEAD
 ball = ball_constructor([1,12,20,30,10], 8)
 delta = SimplicialComplex(ball)
 show(delta)
@@ -238,4 +283,25 @@ gamma_skel = gamma.n_skeleton(7-3)
 show(gamma_skel)
 ︡0ad5b3d4-e680-4613-9777-c3e1b3510c6e︡{"tex":{"tex":"\\verb|Simplicial|\\phantom{\\verb!x!}\\verb|complex|\\phantom{\\verb!x!}\\verb|with|\\phantom{\\verb!x!}\\verb|21|\\phantom{\\verb!x!}\\verb|vertices|\\phantom{\\verb!x!}\\verb|and|\\phantom{\\verb!x!}\\verb|33|\\phantom{\\verb!x!}\\verb|facets|","display":true}}︡{"tex":{"tex":"\\verb|Simplicial|\\phantom{\\verb!x!}\\verb|complex|\\phantom{\\verb!x!}\\verb|with|\\phantom{\\verb!x!}\\verb|21|\\phantom{\\verb!x!}\\verb|vertices|\\phantom{\\verb!x!}\\verb|and|\\phantom{\\verb!x!}\\verb|1666|\\phantom{\\verb!x!}\\verb|facets|","display":true}}︡{"tex":{"tex":"\\verb|Simplicial|\\phantom{\\verb!x!}\\verb|complex|\\phantom{\\verb!x!}\\verb|with|\\phantom{\\verb!x!}\\verb|21|\\phantom{\\verb!x!}\\verb|vertices|\\phantom{\\verb!x!}\\verb|and|\\phantom{\\verb!x!}\\verb|1666|\\phantom{\\verb!x!}\\verb|facets|","display":true}}︡
 ︠05736660-bd6f-4070-a8c0-b8be1102b23b︠
+=======
+#revlex_list_sort([5,1,3,4],[6,0,3,4])
+#Combinations(range(1,10),2).list()
+#subsets_of_list(range(1,10),1)
+#ball = ball_constructor([1,9,13,0,0], 8)
+#delta = SimplicialComplex(ball)
+#delta_skel = delta.n_skeleton(7-3)
+#delta_skel
+# boundary(ball_constructor([1,9,20,10], 8))
+#gamma= SimplicialComplex(boundary(ball))
+#gamma.g_vector()
+#gamma_skel = gamma.n_skeleton(7-3)
+#gamma_skel
+︡7976ab98-a14e-4772-b0bf-21cea75f1ccd︡{"stdout":"[[[0, 0, 0, 0], [1, 1, 1, 1], [2, 4, 8, 16], [3, 9, 27, 81]], [[0, 0, 0, 0], [1, 1, 1, 1], [3, 9, 27, 81], [4, 16, 64, 256]], [[1, 1, 1, 1], [2, 4, 8, 16], [3, 9, 27, 81], [4, 16, 64, 256]], [[1, 1, 1, 1], [2, 4, 8, 16], [4, 16, 64, 256], [5, 25, 125, 625]]]\n"}︡
+︠512ba0b8-bd4d-4d76-ace5-a9ebd2696364︠
+
+︠f74f6ec5-e0b8-4723-b061-506aba0f53df︠
+
+︠852e3e67-6657-4cf3-a259-b9d803e641b8i︠
+︠953a70d9-2e21-4a42-89fc-53ef910328d5︠
+>>>>>>> f6cf5781015ac51b70399241e7f8ba595cae093b
 
