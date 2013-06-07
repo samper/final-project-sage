@@ -82,11 +82,13 @@ def generate_starting_point_direction(P):
 
 # This function calculates the line shelling
 # with direction directionVector and starting point startingPoint
+
+#Old Code: if abs(vector(j[1:]).dot_product(vector(directionVector)))/(vector(j[1:]).norm()*vector(directionVector).norm()) < genericity_tolerance:
 def line_shelling(P, k, startingPoint, directionVector):
-    genericity_tolerance=.00001
+    genericity_tolerance=.00000001
 
     for j in P.inequalities_list():
-        if abs(vector(j[1:]).dot_product(vector(directionVector))) < genericity_tolerance:
+        if vector(j[1:]).dot_product(vector(directionVector)) == 0:
             print "Genericity of directionVector failed!"
             return
 
@@ -99,11 +101,6 @@ def line_shelling(P, k, startingPoint, directionVector):
     for i in range(len(P.inequalities_list())):
         ShellingOrder.append([P.inequalities_list()[i],find_facet_vertices(P.inequalities_list()[i],homoVerts),find_intersection(startingPoint,directionVector,P.inequalities_list()[i])])
     ShellingOrder.sort(key=lambda x: x[2])
-
-    for i in range(len(ShellingOrder)-1):
-        if (ShellingOrder[i+1][2]-ShellingOrder[i][2]) < genericity_tolerance:
-            print "Genericity of Shelling Order failed!"
-            return
 
     iter=ShellingOrder[0][2]
     while iter<0:
@@ -123,10 +120,7 @@ def line_shelling(P, k, startingPoint, directionVector):
 #line_shelling(Q,4,D[0],D[1])
 
 #R=Polyhedron(vertices=[[0,0],[1,0],[0,1],[1,1]])
-#line_shelling(R,4,[0,.5],[-1,.5])
-
-
-
+#line_shelling(R,4,[0,.5],[-1,0])
 
 
 
@@ -242,58 +236,51 @@ def rational_cyclic_polytope(dimension, base_points):
     return Polyhedron(vertices = vertex_set)
 
 
-︡4ebdd9dd-9e23-4f18-ae43-0d2b599c07ee︡
-︠ea6a4b92-0f6a-4624-965e-2f1caec5fe54︠
-rationals = [i for i in range(15)]
-dimension = 8
-stopping_point = 10
-Q = rational_cyclic_polytope(dimension, rationals)
-temporal= Q.center()
-starting_point = []Poing.append(Poing.append(
-perturbationVector=[ZZ.random_element(90,110)/1001 for i in range(dimension)]
-for i in range(len(temporal)):
-    starting_point.append(temporal[i] + perturbationVector[i] )
-direction = [ZZ.random_element(90,110)/1001 for i in range(dimension)]
-shelling_order = line_shelling(Q, stopping_point, starting_point, direction )
+
+
+#TESTING THE LINE SHELLING CODE
+
+stopPoint = 12
+Q = rational_cyclic_polytope(6, [0,1,2,3,4,5,6,7,8,9,10,11])
+startingPoint = list(Q.center())
+perturbationVector=[ZZ.random_element(90,110)/1001 for i in range(len(startingPoint))]
+direction = [Q.vertices_list()[4][i]-startingPoint[i]-perturbationVector[i] for i in range(len(startingPoint))]
+
+#vector([5,1,1]).norm()
+#vector([5,1,1]).norm()*vector([0,-1,1]).norm()
+#direction
+#[n(direction[i]/vector(direction).norm()) for i in range(len(direction))]
+#for j in Q.inequalities_list():
+#    v=vector(j[1:])
+#    l=[n(j[i]/v.norm()) for i in range(1,len(j))]
+#    print l
+#for j in Q.inequalities_list():
+#    print n(abs(vector(j[1:]).dot_product(vector(direction)))/(vector(j[1:]).norm()*vector(direction).norm()))
+#for i in range(len(temporal)):
+#    starting_point.append(temporal[i] + perturbationVector[i] )
+#direction = [ZZ.random_element(90,110)/1001 for i in range(dimension)]
+shelling_order = line_shelling(Q, stopPoint, startingPoint, direction )
 if not shelling_order == None:
     abstract_complex = []
-    for i in range(len(shelling_order)):
+    for i in shelling_order:
         facet = []
-        for j in range(len(shelling_order[i])):
-            facet.append(shelling_order[i][j][0])
+        for j in i:
+            facet.append(j[0])
         abstract_complex.append(facet)
-
-    ball = SimplicialComplex(boundary(abstract_complex))
-    ball.h_vector()
+sphere = SimplicialComplex(boundary(abstract_complex))
 
 
-︡45b25f20-983a-4bd9-84c0-300cb4a870c9︡{"stdout":"[1, 6, 16, 26, 4, 1, 16, 9, 10, 9]"}︡
-︠852e3e67-6657-4cf3-a259-b9d803e641b8i︠
-Q=polytopes.cyclic_polytope(4,12)
-show(line_shelling(Q,5))
-complex_1 = shelling_facets(Q,5)
-show(complex_1)
-show(SimplicialComplex(complex_1))
-
-<<<<<<< HEAD
-ball = ball_constructor([1,12,20,30,10], 8)
-delta = SimplicialComplex(ball)
-show(delta)
-boundary_complex =SimplicialComplex(boundary(ball))
-show(boundary_complex)
-show(boundary_complex.g_vector())
-
-ball = ball_constructor([1,12,20,0,0], 8)
-beta = SimplicialComplex(ball)
-show(beta)
-beta_skel = beta.n_skeleton(7-3)
-show(beta_skel)
-gamma= SimplicialComplex(boundary(ball))
-gamma_skel = gamma.n_skeleton(7-3)
-show(gamma_skel)
-︡17aa1c14-21bd-44cd-827a-6fdbe0547197︡{"stderr":"Error in lines 2-2\nTraceback (most recent call last):\n  File \"/mnt/home/M5roBTgW/.sagemathcloud/sage_server.py\", line 412, in execute\n    exec compile(block, '', 'single') in namespace, locals\n  File \"\", line 1, in <module>\nTypeError: line_shelling() takes exactly 4 arguments (2 given)\n"}︡
+#Q.vertices_list()
+#startingPoint
+#direction
+shelling_order
+abstract_complex
+boundary(abstract_complex)
+sphere.h_vector()
+︡d7872fb1-510f-436e-afa6-ae37ab4c39a8︡{"stdout":"[[[0, 0, 0, 0, 0, 0], [4, 16, 64, 256, 1024, 4096], [5, 25, 125, 625, 3125, 15625], [8, 64, 512, 4096, 32768, 262144], [9, 81, 729, 6561, 59049, 531441], [11, 121, 1331, 14641, 161051, 1771561]], [[0, 0, 0, 0, 0, 0], [4, 16, 64, 256, 1024, 4096], [5, 25, 125, 625, 3125, 15625], [9, 81, 729, 6561, 59049, 531441], [10, 100, 1000, 10000, 100000, 1000000], [11, 121, 1331, 14641, 161051, 1771561]], [[0, 0, 0, 0, 0, 0], [4, 16, 64, 256, 1024, 4096], [5, 25, 125, 625, 3125, 15625], [7, 49, 343, 2401, 16807, 117649], [8, 64, 512, 4096, 32768, 262144], [11, 121, 1331, 14641, 161051, 1771561]], [[0, 0, 0, 0, 0, 0], [3, 9, 27, 81, 243, 729], [4, 16, 64, 256, 1024, 4096], [8, 64, 512, 4096, 32768, 262144], [9, 81, 729, 6561, 59049, 531441], [11, 121, 1331, 14641, 161051, 1771561]], [[0, 0, 0, 0, 0, 0], [3, 9, 27, 81, 243, 729], [4, 16, 64, 256, 1024, 4096], [9, 81, 729, 6561, 59049, 531441], [10, 100, 1000, 10000, 100000, 1000000], [11, 121, 1331, 14641, 161051, 1771561]], [[0, 0, 0, 0, 0, 0], [3, 9, 27, 81, 243, 729], [4, 16, 64, 256, 1024, 4096], [7, 49, 343, 2401, 16807, 117649], [8, 64, 512, 4096, 32768, 262144], [11, 121, 1331, 14641, 161051, 1771561]], [[0, 0, 0, 0, 0, 0], [4, 16, 64, 256, 1024, 4096], [5, 25, 125, 625, 3125, 15625], [6, 36, 216, 1296, 7776, 46656], [7, 49, 343, 2401, 16807, 117649], [11, 121, 1331, 14641, 161051, 1771561]], [[0, 0, 0, 0, 0, 0], [3, 9, 27, 81, 243, 729], [4, 16, 64, 256, 1024, 4096], [6, 36, 216, 1296, 7776, 46656], [7, 49, 343, 2401, 16807, 117649], [11, 121, 1331, 14641, 161051, 1771561]], [[0, 0, 0, 0, 0, 0], [3, 9, 27, 81, 243, 729], [4, 16, 64, 256, 1024, 4096], [5, 25, 125, 625, 3125, 15625], [6, 36, 216, 1296, 7776, 46656], [11, 121, 1331, 14641, 161051, 1771561]], [[0, 0, 0, 0, 0, 0], [5, 25, 125, 625, 3125, 15625], [6, 36, 216, 1296, 7776, 46656], [7, 49, 343, 2401, 16807, 117649], [8, 64, 512, 4096, 32768, 262144], [11, 121, 1331, 14641, 161051, 1771561]], [[0, 0, 0, 0, 0, 0], [1, 1, 1, 1, 1, 1], [4, 16, 64, 256, 1024, 4096], [5, 25, 125, 625, 3125, 15625], [10, 100, 1000, 10000, 100000, 1000000], [11, 121, 1331, 14641, 161051, 1771561]], [[0, 0, 0, 0, 0, 0], [1, 1, 1, 1, 1, 1], [4, 16, 64, 256, 1024, 4096], [5, 25, 125, 625, 3125, 15625], [9, 81, 729, 6561, 59049, 531441], [10, 100, 1000, 10000, 100000, 1000000]]]\n[[0, 4, 5, 8, 9, 11], [0, 4, 5, 9, 10, 11], [0, 4, 5, 7, 8, 11], [0, 3, 4, 8, 9, 11], [0, 3, 4, 9, 10, 11], [0, 3, 4, 7, 8, 11], [0, 4, 5, 6, 7, 11], [0, 3, 4, 6, 7, 11], [0, 3, 4, 5, 6, 11], [0, 5, 6, 7, 8, 11], [0, 1, 4, 5, 10, 11], [0, 1, 4, 5, 9, 10]]\n[[4, 5, 8, 9, 11], [0, 5, 8, 9, 11], [0, 4, 5, 8, 9], [4, 5, 9, 10, 11], [0, 5, 9, 10, 11], [4, 5, 7, 8, 11], [0, 4, 5, 7, 8], [3, 4, 8, 9, 11], [0, 3, 8, 9, 11], [0, 3, 4, 8, 9], [3, 4, 9, 10, 11], [0, 3, 9, 10, 11], [0, 3, 4, 10, 11], [0, 3, 4, 9, 10], [3, 4, 7, 8, 11], [0, 3, 7, 8, 11], [0, 3, 4, 7, 8], [4, 5, 6, 7, 11], [0, 4, 5, 6, 7], [3, 4, 6, 7, 11], [0, 3, 6, 7, 11], [0, 3, 4, 6, 7], [3, 4, 5, 6, 11], [0, 3, 5, 6, 11], [0, 3, 4, 5, 11], [0, 3, 4, 5, 6], [5, 6, 7, 8, 11], [0, 6, 7, 8, 11], [0, 5, 6, 8, 11], [0, 5, 6, 7, 8], [1, 4, 5, 10, 11], [0, 1, 5, 10, 11], [0, 1, 4, 10, 11], [0, 1, 4, 5, 11], [1, 4, 5, 9, 10], [0, 1, 5, 9, 10], [0, 1, 4, 9, 10], [0, 1, 4, 5, 9]]\n[1, 6, 12, 12, 6, 1]\n"}︡
+︠554e8b08-eb31-4786-b638-d83f137fc0e0︠
 ︠05736660-bd6f-4070-a8c0-b8be1102b23b︠
-=======
+
 #revlex_list_sort([5,1,3,4],[6,0,3,4])
 #Combinations(range(1,10),2).list()
 #subsets_of_list(range(1,10),1)
@@ -306,7 +293,7 @@ show(gamma_skel)
 #gamma.g_vector()
 #gamma_skel = gamma.n_skeleton(7-3)
 #gamma_skel
-︡7976ab98-a14e-4772-b0bf-21cea75f1ccd︡{"stdout":"[[[0, 0, 0, 0], [1, 1, 1, 1], [2, 4, 8, 16], [3, 9, 27, 81]], [[0, 0, 0, 0], [1, 1, 1, 1], [3, 9, 27, 81], [4, 16, 64, 256]], [[1, 1, 1, 1], [2, 4, 8, 16], [3, 9, 27, 81], [4, 16, 64, 256]], [[1, 1, 1, 1], [2, 4, 8, 16], [4, 16, 64, 256], [5, 25, 125, 625]]]\n"}︡
+︡6c45b4f5-98ac-4e92-9698-540f1304119c︡
 ︠512ba0b8-bd4d-4d76-ace5-a9ebd2696364︠
 
 ︠f74f6ec5-e0b8-4723-b061-506aba0f53df︠
