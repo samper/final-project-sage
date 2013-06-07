@@ -245,11 +245,11 @@ def rational_cyclic_polytope(dimension, base_points):
 ︡4ebdd9dd-9e23-4f18-ae43-0d2b599c07ee︡
 ︠ea6a4b92-0f6a-4624-965e-2f1caec5fe54︠
 rationals = [i for i in range(15)]
-dimension = 10
+dimension = 8
 stopping_point = 10
 Q = rational_cyclic_polytope(dimension, rationals)
 temporal= Q.center()
-starting_point = []
+starting_point = []Poing.append(Poing.append(
 perturbationVector=[ZZ.random_element(90,110)/1001 for i in range(dimension)]
 for i in range(len(temporal)):
     starting_point.append(temporal[i] + perturbationVector[i] )
