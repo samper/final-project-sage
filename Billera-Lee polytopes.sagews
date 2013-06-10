@@ -1,4 +1,4 @@
-︠b6c127e3-5019-4ae0-a0a5-8a8b1741a104︠
+︠b6c127e3-5019-4ae0-a0a5-8a8b1741a104r︠
 #Computes the canonical binomial decomposition of n given k.
 def decomp(n, k):
     list=[]
@@ -114,7 +114,6 @@ def line_shelling(P, k, startingPoint, directionVector):
     return [ShellingOrder[i][1] for i in range(len(ShellingOrder))]
 
 
-
 #Q=polytopes.cyclic_polytope(4,7)
 #D=generate_starting_point_direction(Q)
 #line_shelling(Q,4,D[0],D[1])
@@ -203,7 +202,6 @@ def ball_constructor(g_vector, dimension):
     same_degree_facets=[l for l in link_facets if l[0]!=1]
     ordered_link_facets.append(same_degree_facets)
 
-
     for i in range(len(ordered_link_facets)):
         for j in range(mu):
             ordered_link_facets[i].sort(key=lambda x: x[j])
@@ -225,7 +223,12 @@ def ball_constructor(g_vector, dimension):
                 final_list[i][j]+=1
             final_list[i].insert(0,1)
 
-
+    if dimension%2 == 1:
+        for i in range(len(final_list)):
+            for j in range(len(final_list[i])):
+                final_list[i][j]+=2
+            final_list[i].insert(0,2)
+            final_list[i].insert(0,1)
 
 
     return final_list
@@ -240,44 +243,99 @@ def rational_cyclic_polytope(dimension, base_points):
 
 #TESTING THE LINE SHELLING CODE
 
-stopPoint = 12
-Q = rational_cyclic_polytope(6, [0,1,2,3,4,5,6,7,8,9,10,11])
-startingPoint = list(Q.center())
-perturbationVector=[ZZ.random_element(90,110)/1001 for i in range(len(startingPoint))]
-direction = [Q.vertices_list()[4][i]-startingPoint[i]-perturbationVector[i] for i in range(len(startingPoint))]
 
-#vector([5,1,1]).norm()
-#vector([5,1,1]).norm()*vector([0,-1,1]).norm()
-#direction
-#[n(direction[i]/vector(direction).norm()) for i in range(len(direction))]
-#for j in Q.inequalities_list():
-#    v=vector(j[1:])
-#    l=[n(j[i]/v.norm()) for i in range(1,len(j))]
-#    print l
-#for j in Q.inequalities_list():
-#    print n(abs(vector(j[1:]).dot_product(vector(direction)))/(vector(j[1:]).norm()*vector(direction).norm()))
-#for i in range(len(temporal)):
-#    starting_point.append(temporal[i] + perturbationVector[i] )
-#direction = [ZZ.random_element(90,110)/1001 for i in range(dimension)]
-shelling_order = line_shelling(Q, stopPoint, startingPoint, direction )
-if not shelling_order == None:
-    abstract_complex = []
-    for i in shelling_order:
-        facet = []
-        for j in i:
-            facet.append(j[0])
-        abstract_complex.append(facet)
-sphere = SimplicialComplex(boundary(abstract_complex))
+#dimension = 6
+#g_vector = [1,8,0,0]
 
+#This is an attempt to build Billera Lee polytopes using a non-standard method, i.e something that slightly differs from the original proof from Billera-Lee to prove that this polytopes indeed exist.It takes a long time because we are picking large numbers to do computations with, guided by the intuition from the paper by Billera and Lee.
 
+def BilleraLeePolytope(g_vector, dimension):
+    vertices = g_vector[1] + dimension + 1
+    stopPoint = 0
+    stopPoint
+    for i in range(len(g_vector)):
+        stopPoint += g_vector[i]
+    #stopPoint
+    facets = ball_constructor(g_vector, dimension)
+    #facets
+    vertex_base = [stopPoint^(i^i) for i in range(vertices)]
+    Q = rational_cyclic_polytope(dimension+1, vertex_base)
+    Q
+    initFacets = []
+    for i in range(len(facets)):
+        polytopeFacet = [vertex_base[j-1] for j in facets[i]]
+        P = rational_cyclic_polytope(dimension+1, polytopeFacet)
+        coordinates = list(P.center())
+        initFacets.append(coordinates)
+    #initFacets
+    weightList = []
+    for i in range(len(initFacets)+1):
+        if i == 0:
+            weightList.append(len(initFacets)^4)
+        else:
+            weightList.append(i^3)
+
+    totalWeight=0
+    for i in range(len(weightList)):
+        totalWeight+=weightList[i]
+    startingPoint = list(Q.center())
+    #startingPoint
+    for i in range(len(startingPoint)):
+        startingPoint[i]=startingPoint[i]*weightList[0]
+    #startingPoint
+    preDirection = Q.vertices_list()[0]
+    for i in range(len(initFacets)):
+        for j in range(len(startingPoint)):
+            startingPoint[j] += weightList[i+1]*initFacets[i][j]
+    for i in range(len(startingPoint)):
+        startingPoint[i]=startingPoint[i]/totalWeight
+
+    perturbationVector=[ZZ.random_element(90,110)/100001  for i in range(len(startingPoint))]
+    direction = [Q.vertices_list()[0][i]-startingPoint[i]-perturbationVector[i] for i in range(len(startingPoint))]
+    perturbationVector2=[ZZ.random_element(90,110)/100001 for i in range(len(startingPoint))]
+    for i in range(len(startingPoint)):
+        startingPoint[i]+= perturbationVector2[i]
+    #vector([5,1,1]).norm()
+    #vector([5,1,1]).norm()*vector([0,-1,1]).norm()
+    #direction
+    #[n(direction[i]/vector(direction).norm()) for i in range(len(direction))]
+    #for j in Q.inequalities_list():
+    #    v=vector(j[1:])
+    #    l=[n(j[i]/v.norm()) for i in range(1,len(j))]
+    #    print l
+    #for j in Q.inequalities_list():
+    #    print n(abs(vector(j[1:]).dot_product(vector(direction)))/(vector(j[1:]).norm()*vector(direction).norm()))
+    #for i in range(len(temporal)):
+    #    starting_point.append(temporal[i] + perturbationVector[i] )
+    #direction = [ZZ.random_element(90,110)/1001 for i in range(dimension)]
+    #for i in range(1,30):
+    shelling_order = line_shelling(Q, stopPoint, startingPoint, direction )
+    if not shelling_order == None:
+        abstract_complex = []
+        for i in shelling_order:
+            facet = []
+            for j in i:
+                facet.append(j[0])
+            abstract_complex.append(facet)
+        #show(abstract_complex)
+
+        ball = SimplicialComplex(abstract_complex)
+        #show(ball.h_vector())
+        sphere = SimplicialComplex(boundary(abstract_complex))
+        #show(sphere.h_vector())
+        show(sphere.h_vector())
+        show(sphere.g_vector())
+
+"Bla Bla"
+BilleraLeePolytope([1,6,15,5,0], 8)
 #Q.vertices_list()
 #startingPoint
 #direction
-shelling_order
-abstract_complex
-boundary(abstract_complex)
-sphere.h_vector()
-︡d7872fb1-510f-436e-afa6-ae37ab4c39a8︡{"stdout":"[[[0, 0, 0, 0, 0, 0], [4, 16, 64, 256, 1024, 4096], [5, 25, 125, 625, 3125, 15625], [8, 64, 512, 4096, 32768, 262144], [9, 81, 729, 6561, 59049, 531441], [11, 121, 1331, 14641, 161051, 1771561]], [[0, 0, 0, 0, 0, 0], [4, 16, 64, 256, 1024, 4096], [5, 25, 125, 625, 3125, 15625], [9, 81, 729, 6561, 59049, 531441], [10, 100, 1000, 10000, 100000, 1000000], [11, 121, 1331, 14641, 161051, 1771561]], [[0, 0, 0, 0, 0, 0], [4, 16, 64, 256, 1024, 4096], [5, 25, 125, 625, 3125, 15625], [7, 49, 343, 2401, 16807, 117649], [8, 64, 512, 4096, 32768, 262144], [11, 121, 1331, 14641, 161051, 1771561]], [[0, 0, 0, 0, 0, 0], [3, 9, 27, 81, 243, 729], [4, 16, 64, 256, 1024, 4096], [8, 64, 512, 4096, 32768, 262144], [9, 81, 729, 6561, 59049, 531441], [11, 121, 1331, 14641, 161051, 1771561]], [[0, 0, 0, 0, 0, 0], [3, 9, 27, 81, 243, 729], [4, 16, 64, 256, 1024, 4096], [9, 81, 729, 6561, 59049, 531441], [10, 100, 1000, 10000, 100000, 1000000], [11, 121, 1331, 14641, 161051, 1771561]], [[0, 0, 0, 0, 0, 0], [3, 9, 27, 81, 243, 729], [4, 16, 64, 256, 1024, 4096], [7, 49, 343, 2401, 16807, 117649], [8, 64, 512, 4096, 32768, 262144], [11, 121, 1331, 14641, 161051, 1771561]], [[0, 0, 0, 0, 0, 0], [4, 16, 64, 256, 1024, 4096], [5, 25, 125, 625, 3125, 15625], [6, 36, 216, 1296, 7776, 46656], [7, 49, 343, 2401, 16807, 117649], [11, 121, 1331, 14641, 161051, 1771561]], [[0, 0, 0, 0, 0, 0], [3, 9, 27, 81, 243, 729], [4, 16, 64, 256, 1024, 4096], [6, 36, 216, 1296, 7776, 46656], [7, 49, 343, 2401, 16807, 117649], [11, 121, 1331, 14641, 161051, 1771561]], [[0, 0, 0, 0, 0, 0], [3, 9, 27, 81, 243, 729], [4, 16, 64, 256, 1024, 4096], [5, 25, 125, 625, 3125, 15625], [6, 36, 216, 1296, 7776, 46656], [11, 121, 1331, 14641, 161051, 1771561]], [[0, 0, 0, 0, 0, 0], [5, 25, 125, 625, 3125, 15625], [6, 36, 216, 1296, 7776, 46656], [7, 49, 343, 2401, 16807, 117649], [8, 64, 512, 4096, 32768, 262144], [11, 121, 1331, 14641, 161051, 1771561]], [[0, 0, 0, 0, 0, 0], [1, 1, 1, 1, 1, 1], [4, 16, 64, 256, 1024, 4096], [5, 25, 125, 625, 3125, 15625], [10, 100, 1000, 10000, 100000, 1000000], [11, 121, 1331, 14641, 161051, 1771561]], [[0, 0, 0, 0, 0, 0], [1, 1, 1, 1, 1, 1], [4, 16, 64, 256, 1024, 4096], [5, 25, 125, 625, 3125, 15625], [9, 81, 729, 6561, 59049, 531441], [10, 100, 1000, 10000, 100000, 1000000]]]\n[[0, 4, 5, 8, 9, 11], [0, 4, 5, 9, 10, 11], [0, 4, 5, 7, 8, 11], [0, 3, 4, 8, 9, 11], [0, 3, 4, 9, 10, 11], [0, 3, 4, 7, 8, 11], [0, 4, 5, 6, 7, 11], [0, 3, 4, 6, 7, 11], [0, 3, 4, 5, 6, 11], [0, 5, 6, 7, 8, 11], [0, 1, 4, 5, 10, 11], [0, 1, 4, 5, 9, 10]]\n[[4, 5, 8, 9, 11], [0, 5, 8, 9, 11], [0, 4, 5, 8, 9], [4, 5, 9, 10, 11], [0, 5, 9, 10, 11], [4, 5, 7, 8, 11], [0, 4, 5, 7, 8], [3, 4, 8, 9, 11], [0, 3, 8, 9, 11], [0, 3, 4, 8, 9], [3, 4, 9, 10, 11], [0, 3, 9, 10, 11], [0, 3, 4, 10, 11], [0, 3, 4, 9, 10], [3, 4, 7, 8, 11], [0, 3, 7, 8, 11], [0, 3, 4, 7, 8], [4, 5, 6, 7, 11], [0, 4, 5, 6, 7], [3, 4, 6, 7, 11], [0, 3, 6, 7, 11], [0, 3, 4, 6, 7], [3, 4, 5, 6, 11], [0, 3, 5, 6, 11], [0, 3, 4, 5, 11], [0, 3, 4, 5, 6], [5, 6, 7, 8, 11], [0, 6, 7, 8, 11], [0, 5, 6, 8, 11], [0, 5, 6, 7, 8], [1, 4, 5, 10, 11], [0, 1, 5, 10, 11], [0, 1, 4, 10, 11], [0, 1, 4, 5, 11], [1, 4, 5, 9, 10], [0, 1, 5, 9, 10], [0, 1, 4, 9, 10], [0, 1, 4, 5, 9]]\n[1, 6, 12, 12, 6, 1]\n"}︡
+#shelling_order
+#abstract_complex
+#boundary(abstract_complex)
+#sphere.h_vector()
+︡23d4e2f4-0ed0-439f-9832-ef013c092d3d︡
 ︠554e8b08-eb31-4786-b638-d83f137fc0e0︠
 ︠05736660-bd6f-4070-a8c0-b8be1102b23b︠
 
@@ -293,11 +351,16 @@ sphere.h_vector()
 #gamma.g_vector()
 #gamma_skel = gamma.n_skeleton(7-3)
 #gamma_skel
-︡6c45b4f5-98ac-4e92-9698-540f1304119c︡
+︡73a04544-5679-41ad-a55a-32513292b79b︡
 ︠512ba0b8-bd4d-4d76-ace5-a9ebd2696364︠
-
+facets = ball_constructor([1,5,10,0],6)
+facets
+SimplicialComplex(facets)
+Q
+︡be0310f9-013c-45d3-9af6-39eeee625353︡{"stdout":"[[1, 2, 3, 4, 5, 6, 7], [1, 2, 3, 4, 5, 7, 8], [1, 2, 3, 4, 5, 8, 9], [1, 2, 3, 4, 5, 9, 10], [1, 2, 3, 4, 5, 10, 11], [1, 2, 3, 4, 5, 11, 12], [1, 2, 3, 5, 6, 7, 8], [1, 2, 3, 5, 6, 8, 9], [1, 2, 3, 6, 7, 8, 9], [1, 2, 3, 5, 6, 9, 10], [1, 2, 3, 6, 7, 9, 10], [1, 2, 3, 7, 8, 9, 10], [1, 2, 3, 5, 6, 10, 11], [1, 2, 3, 6, 7, 10, 11], [1, 2, 3, 7, 8, 10, 11], [1, 2, 3, 8, 9, 10, 11]]\nSimplicial complex with 12 vertices and 16 facets\nA 8-dimensional polyhedron in ZZ^8 defined as the convex hull of 13 vertices\n"}︡
 ︠f74f6ec5-e0b8-4723-b061-506aba0f53df︠
 
+︡2ea1e113-ef14-4aae-b3de-b76e86139b95︡
 ︠773e2e17-565b-49a8-9edf-be6935a0f518i︠
 ︠535aeeb0-a08f-4366-91c7-a81b65c53565︠
 
