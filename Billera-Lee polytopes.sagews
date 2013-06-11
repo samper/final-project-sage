@@ -1,4 +1,4 @@
-︠b6c127e3-5019-4ae0-a0a5-8a8b1741a104r︠
+︠b6c127e3-5019-4ae0-a0a5-8a8b1741a104︠
 #Computes the canonical binomial decomposition of n given k.
 def decomp(n, k):
     list=[]
@@ -123,21 +123,6 @@ def line_shelling(P, k, startingPoint, directionVector):
 
 
 
-#This method computes the g-vector of the boudary of a shelling.Right now it only works for cyclic polytopes (or polytopes whose projection on the first coordinate is injective at the level of vertices).
-def shelling_facets(P,k):
-    facets=[]
-    for i in line_shelling(P,k):
-        facet = []
-        for j in i:
-            facet.append(j[0])
-        facets.append(facet)
-    return facets
-
-
-#This method returns the g-vector of the boundary complex of a simplicial ball obtained by truncating a line shelling of a cyclic polytope.
-def shelling_g_vector(P, k):
-    Delta = SimplicialComplex(boundary(shelling_facets(P, k)))
-    return Delta.g_vector()
 
 
 #This method computes the boundary complex of a pseudomanifold (we will only use it for d-balls). Since we intent to work with complexes that are guaranteed to be pseudomanifolds this method does NOT check wether the imput facets are the facets of a pseudomanifold.
@@ -258,7 +243,7 @@ def BilleraLeePolytope(g_vector, dimension):
     #stopPoint
     facets = ball_constructor(g_vector, dimension)
     #facets
-    vertex_base = [stopPoint^(i^i) for i in range(vertices)]
+    vertex_base = [stopPoint^(i) for i in range(vertices)]
     Q = rational_cyclic_polytope(dimension+1, vertex_base)
     Q
     initFacets = []
@@ -271,9 +256,9 @@ def BilleraLeePolytope(g_vector, dimension):
     weightList = []
     for i in range(len(initFacets)+1):
         if i == 0:
-            weightList.append(len(initFacets)^4)
+            weightList.append(len(initFacets))
         else:
-            weightList.append(i^3)
+            weightList.append(i/2)
 
     totalWeight=0
     for i in range(len(weightList)):
@@ -326,8 +311,8 @@ def BilleraLeePolytope(g_vector, dimension):
         show(sphere.h_vector())
         show(sphere.g_vector())
 
-"Bla Bla"
-BilleraLeePolytope([1,6,15,5,0], 8)
+
+
 #Q.vertices_list()
 #startingPoint
 #direction
@@ -335,7 +320,7 @@ BilleraLeePolytope([1,6,15,5,0], 8)
 #abstract_complex
 #boundary(abstract_complex)
 #sphere.h_vector()
-︡23d4e2f4-0ed0-439f-9832-ef013c092d3d︡
+︡11516720-cead-4c1f-8b4c-dcf2fec21063︡{"stdout":"'Bla Bla'\n"}︡
 ︠554e8b08-eb31-4786-b638-d83f137fc0e0︠
 ︠05736660-bd6f-4070-a8c0-b8be1102b23b︠
 
@@ -351,16 +336,55 @@ BilleraLeePolytope([1,6,15,5,0], 8)
 #gamma.g_vector()
 #gamma_skel = gamma.n_skeleton(7-3)
 #gamma_skel
-︡73a04544-5679-41ad-a55a-32513292b79b︡
+︡a0238f65-0765-4037-ae57-2bdcc561a301︡
 ︠512ba0b8-bd4d-4d76-ace5-a9ebd2696364︠
-facets = ball_constructor([1,5,10,0],6)
-facets
-SimplicialComplex(facets)
+#DEMO OF HOW TO USE:
+#Decompositions:
+'The 4-binomial decompostion of 10 is given by:'
+decomp(10, 4)
+'The 4-binomial decompostion of 100 is given by:'
+decomp(100, 4)
+'The 4th shadow of 10 is:'
+shadow_op(10, 4)
+'The 4th shadow of 100 is:'
+shadow_op(100, 4)
+#M sequences:
+#This is easy to check by hand!
+'The list [1,4,9,15,13,10,10] is an M-sequence?'
+is_M_sequence([1,4,9,15,13,10,10])
+#The first entry is not 1
+'The list [2,3,4,5,6,7] is an M-sequence?'
+is_M_sequence([2,3,4,5,6,7])
+#First check the conditions without the 7 disturbing, then add the 7 condition
+'The set of values i such that [1,5,i,7] is an M-sequnece is:'
+i = 0
+stop = False
+indicesTemp = []
+while not stop:
+    if not is_M_sequence([1,5,i]):
+        stop = True
+    else:
+        indicesTemp.append(i)
+        i+=1
+indices = []
+for j in indicesTemp:
+    if is_M_sequence([1,5,j,7]):
+        indices.append(j)
+indices
+#Now we construct a rational cyclic polytope
+Q = rational_cyclic_polytope(8, [1,3,5,7,9,11,13,15,17])
 Q
-︡be0310f9-013c-45d3-9af6-39eeee625353︡{"stdout":"[[1, 2, 3, 4, 5, 6, 7], [1, 2, 3, 4, 5, 7, 8], [1, 2, 3, 4, 5, 8, 9], [1, 2, 3, 4, 5, 9, 10], [1, 2, 3, 4, 5, 10, 11], [1, 2, 3, 4, 5, 11, 12], [1, 2, 3, 5, 6, 7, 8], [1, 2, 3, 5, 6, 8, 9], [1, 2, 3, 6, 7, 8, 9], [1, 2, 3, 5, 6, 9, 10], [1, 2, 3, 6, 7, 9, 10], [1, 2, 3, 7, 8, 9, 10], [1, 2, 3, 5, 6, 10, 11], [1, 2, 3, 6, 7, 10, 11], [1, 2, 3, 7, 8, 10, 11], [1, 2, 3, 8, 9, 10, 11]]\nSimplicial complex with 12 vertices and 16 facets\nA 8-dimensional polyhedron in ZZ^8 defined as the convex hull of 13 vertices\n"}︡
+# Now we generate a direction and a starting point for a Line shelling of Q
+startingPoint = list(Q.center)
+#Next we generate a direction for the line shelling
+facets = ball_constructor([1,5,10,0],6)
+
+SimplicialComplex(facets)
+
+︡6fc4321f-fe9d-4f5f-9cb6-ef8972c0e935︡{"stdout":"'The 4-binomial decompostion of 10 is given by:'\n[[5, 4], [4, 3], [2, 2]]\n'The 4-binomial decompostion of 100 is given by:'\n[[8, 4], [6, 3], [5, 2]]\n'The 4th shadow of 10 is:'\n8\n'The 4th shadow of 100 is:'\n49\n'The list [1,4,9,15,13,10,10] is an M-sequence?'\nTrue\n'The list [2,3,4,5,6,7] is an M-sequence?'\nFalse\n'The set of values i such that [1,5,i,7] is an M-sequnece is:'\n[5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]\nA 8-dimensional polyhedron in ZZ^8 defined as the convex hull of 9 vertices\nSimplicial complex with 12 vertices and 16 facets\n"}︡
 ︠f74f6ec5-e0b8-4723-b061-506aba0f53df︠
 
-︡2ea1e113-ef14-4aae-b3de-b76e86139b95︡
+︡2d1ad23c-c7d1-4f96-bf4a-b7f77191b3cb︡
 ︠773e2e17-565b-49a8-9edf-be6935a0f518i︠
 ︠535aeeb0-a08f-4366-91c7-a81b65c53565︠
 
