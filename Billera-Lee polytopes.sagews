@@ -125,7 +125,9 @@ def line_shelling(P, k, startingPoint, directionVector):
 
 
 
-#This method computes the boundary complex of a pseudomanifold (we will only use it for d-balls). Since we intent to work with complexes that are guaranteed to be pseudomanifolds this method does NOT check wether the imput facets are the facets of a pseudomanifold.
+#This method computes the boundary complex of a pseudomanifold (we will only use it for d-balls).
+#Since we intent to work with complexes that are guaranteed to be pseudomanifolds
+#this method does NOT check wether the imput facets are the facets of a pseudomanifold.
 def boundary(facets):
     ridges = []
     for i in range(len(facets)):
@@ -218,6 +220,18 @@ def ball_constructor(g_vector, dimension):
 
     return final_list
 
+#b=SimplicialComplex(ball_constructor([1,4,5,5,0],8))
+#s=SimplicialComplex(boundary(ball_constructor([1,4,5,5,0],8)))
+#b.h_vector()
+#s.h_vector()
+#s.g_vector()
+
+︡aa894309-8c17-486e-9a3d-8f770bba5364︡{"stdout":"[1, 4, 5, 5, 0]"}︡
+︠554e8b08-eb31-4786-b638-d83f137fc0e0︠
+︠05736660-bd6f-4070-a8c0-b8be1102b23b︠
+
+
+
 #This generates rational cyclic polytopes. It takes as imput the dimension, and a set of base points on the moment curve.
 def rational_cyclic_polytope(dimension, base_points):
     vertex_set = [[i^j for j in range(1,dimension+1)] for i in base_points]
@@ -232,54 +246,77 @@ def rational_cyclic_polytope(dimension, base_points):
 #dimension = 6
 #g_vector = [1,8,0,0]
 
-#This is an attempt to build Billera Lee polytopes using a non-standard method, i.e something that slightly differs from the original proof from Billera-Lee to prove that this polytopes indeed exist.It takes a long time because we are picking large numbers to do computations with, guided by the intuition from the paper by Billera and Lee.
+#This is an attempt to build Billera Lee polytopes using a non-standard method,
+#i.e something that slightly differs from the original proof from Billera-Lee to prove that these
+#polytopes indeed exist.  It takes a long time because we are picking large numbers to
+#do computations with, guided by the intuition from the paper by Billera and Lee.
 
 def BilleraLeePolytope(g_vector, dimension):
     vertices = g_vector[1] + dimension + 1
-    stopPoint = 0
-    stopPoint
-    for i in range(len(g_vector)):
-        stopPoint += g_vector[i]
-    #stopPoint
+    stopPoint = sum(g_vector)
+    #print stopPoint
+
+    #This is the simplicial complex that we want to find via a line shelling
     facets = ball_constructor(g_vector, dimension)
-    #facets
+
+    #Here we construct the cyclic polytope that we will shell
     vertex_base = [stopPoint^(i) for i in range(vertices)]
+    #print vertex_base
     Q = rational_cyclic_polytope(dimension+1, vertex_base)
-    Q
+
+    #Here we find the facets of Q that correspond to the ones we want.
+    #initFacets is a list of the centers of these facets
     initFacets = []
     for i in range(len(facets)):
         polytopeFacet = [vertex_base[j-1] for j in facets[i]]
         P = rational_cyclic_polytope(dimension+1, polytopeFacet)
         coordinates = list(P.center())
         initFacets.append(coordinates)
-    #initFacets
-    weightList = []
-    for i in range(len(initFacets)+1):
-        if i == 0:
-            weightList.append(len(initFacets))
-        else:
-            weightList.append(i/2)
+    #print initFacets
 
-    totalWeight=0
-    for i in range(len(weightList)):
-        totalWeight+=weightList[i]
-    startingPoint = list(Q.center())
-    #startingPoint
-    for i in range(len(startingPoint)):
-        startingPoint[i]=startingPoint[i]*weightList[0]
-    #startingPoint
-    preDirection = Q.vertices_list()[0]
-    for i in range(len(initFacets)):
-        for j in range(len(startingPoint)):
-            startingPoint[j] += weightList[i+1]*initFacets[i][j]
-    for i in range(len(startingPoint)):
-        startingPoint[i]=startingPoint[i]/totalWeight
-
+    #We want a shelling that only captures the facets with centers in initFacets.
+    #We need to choose a starting point and direction that accomplishes this...
+    startingPoint=list(Q.center())
+    averageCenter=[sum(i)/len(initFacets) for i in zip(*initFacets)]
+    directionList=[[d[j]-startingPoint[j] for j in range(len(startingPoint))] for d in initFacets]
     perturbationVector=[ZZ.random_element(90,110)/100001  for i in range(len(startingPoint))]
-    direction = [Q.vertices_list()[0][i]-startingPoint[i]-perturbationVector[i] for i in range(len(startingPoint))]
-    perturbationVector2=[ZZ.random_element(90,110)/100001 for i in range(len(startingPoint))]
-    for i in range(len(startingPoint)):
-        startingPoint[i]+= perturbationVector2[i]
+    #print startingPoint, preDirection, perturbationVector
+    #direction = [preDirection[i]-startingPoint[i]-perturbationVector[i] for i in range(len(startingPoint))]
+    preDirection = [sum(i) for i in zip(*directionList)]
+    direction = [preDirection[i]-perturbationVector[i] for i in range(len(preDirection))]
+    print startingPoint
+    print direction
+
+
+    #weightList = []
+    #for i in range(len(initFacets)+1):
+    #    if i == 0:
+    #        weightList.append(len(initFacets))
+    #    else:
+    #        weightList.append(i/2)
+
+    #totalWeight=0
+    #for i in range(len(weightList)):
+    #    totalWeight+=weightList[i]
+    #startingPoint = list(Q.center())
+    #startingPoint
+    #for i in range(len(startingPoint)):
+    #    startingPoint[i]=startingPoint[i]*weightList[0]
+    #startingPoint
+    #preDirection = Q.vertices_list()[0]
+    #for i in range(len(initFacets)):
+    #    for j in range(len(startingPoint)):
+    #        startingPoint[j] += weightList[i+1]*initFacets[i][j]
+    #for i in range(len(startingPoint)):
+    #    startingPoint[i]=startingPoint[i]/totalWeight
+
+    #perturbationVector=[ZZ.random_element(90,110)/100001  for i in range(len(startingPoint))]
+    #direction = [Q.vertices_list()[0][i]-startingPoint[i]-perturbationVector[i] for i in range(len(startingPoint))]
+    #perturbationVector2=[ZZ.random_element(90,110)/100001 for i in range(len(startingPoint))]
+    #for i in range(len(startingPoint)):
+    #    startingPoint[i]+= perturbationVector2[i]
+
+
     #vector([5,1,1]).norm()
     #vector([5,1,1]).norm()*vector([0,-1,1]).norm()
     #direction
@@ -320,9 +357,10 @@ def BilleraLeePolytope(g_vector, dimension):
 #abstract_complex
 #boundary(abstract_complex)
 #sphere.h_vector()
-︡11516720-cead-4c1f-8b4c-dcf2fec21063︡{"stdout":"'Bla Bla'\n"}︡
-︠554e8b08-eb31-4786-b638-d83f137fc0e0︠
-︠05736660-bd6f-4070-a8c0-b8be1102b23b︠
+BilleraLeePolytope([1,4,5,5,0],5)
+︡197faba7-9b75-46fa-9675-2535b9a64f9e︡
+︠5d14a65a-a635-4b40-ba59-38c54316f186︠
+︠eeee17d2-c96a-41f4-9df1-cf141111c4a7︠
 
 #revlex_list_sort([5,1,3,4],[6,0,3,4])
 #Combinations(range(1,10),2).list()
@@ -336,7 +374,7 @@ def BilleraLeePolytope(g_vector, dimension):
 #gamma.g_vector()
 #gamma_skel = gamma.n_skeleton(7-3)
 #gamma_skel
-︡a0238f65-0765-4037-ae57-2bdcc561a301︡
+︡aed8d970-0872-4aa8-9c8f-3b51e91908e8︡
 ︠512ba0b8-bd4d-4d76-ace5-a9ebd2696364︠
 #DEMO OF HOW TO USE:
 #Decompositions:
