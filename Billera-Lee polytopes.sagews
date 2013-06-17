@@ -206,10 +206,34 @@ def exterior(facets):
             Exterior.append(face)
     return Exterior
 
+def exterior_of_degree(facets,degree):
+    Exterior=[]
+    Boundary=boundary(facets)
+    for face in facets:
+        exteriorDegree=0
+        faceRidges=Combinations(face,len(face)-1).list()
+        for b in Boundary:
+            if b in faceRidges:
+                exteriorDegree+=1
+        if exteriorDegree>= degree:
+            Exterior.append(face)
+    return Exterior
+
+def exteriorDegree(face,facets):
+    exteriorDegree=0
+    Boundary=boundary(facets)
+    faceRidges=Combinations(face,len(face)-1).list()
+    for b in Boundary:
+        if b in faceRidges:
+            exteriorDegree+=1
+    return exteriorDegree
+
 interior([[1,2,6],[2,3,4],[2,4,6],[4,5,6],[7,8,9],[1,2,7],[2,7,8],[2,3,8]])
 exterior([[1,2,6],[2,3,4],[2,4,6],[4,5,6],[7,8,9],[1,2,7],[2,7,8],[2,3,8]])
 boundary([[1,2,6],[2,3,4],[2,4,6],[4,5,6],[7,8,9],[1,2,7],[2,7,8],[2,3,8]])
-︡d475a598-9edc-4f07-8ffb-1261fac16831︡{"stdout":"[[2, 4, 6], [2, 7, 8]]\n[[1, 2, 6], [2, 3, 4], [4, 5, 6], [7, 8, 9], [1, 2, 7], [2, 3, 8]]\n[[1, 6], [3, 4], [4, 5], [5, 6], [7, 9], [8, 9], [1, 7], [3, 8]]\n"}︡
+exterior_of_degree([[1,2,6],[2,3,4],[2,4,6],[4,5,6],[7,8,9],[1,2,7],[2,7,8],[2,3,8]],2)
+exteriorDegree([4,5,6],[[1,2,6],[2,3,4],[2,4,6],[4,5,6],[7,8,9],[1,2,7],[2,7,8],[2,3,8]])
+︡2ff1ce25-9436-4635-a4fa-1a393d8d29bc︡{"stdout":"[[2, 4, 6], [2, 7, 8]]\n[[1, 2, 6], [2, 3, 4], [4, 5, 6], [7, 8, 9], [1, 2, 7], [2, 3, 8]]\n[[1, 6], [3, 4], [4, 5], [5, 6], [7, 9], [8, 9], [1, 7], [3, 8]]\n[[4, 5, 6], [7, 8, 9]]\n2\n"}︡
 ︠05736660-bd6f-4070-a8c0-b8be1102b23b︠
 
 
@@ -277,12 +301,21 @@ def ball_constructor(g_vector, dimension):
     return final_list
 
 #b=SimplicialComplex(ball_constructor([1,4,5,5,0],8))
-s=SimplicialComplex(boundary(ball_constructor([1,4,5,6,6],8)))
+#s=SimplicialComplex(boundary(ball_constructor([1,4,5,6,6],8)))
 #b.h_vector()
 #s.h_vector()
-s.g_vector()
+#s.g_vector()
 #print "hello"
-︡6a5c38b3-4311-41be-b6d0-2719874002fd︡{"stdout":"[1, 4, 5, 6, 6]"}︡
+
+desiredFacets = ball_constructor([1,4,5,5,0], 8)
+#print desiredFacets
+exteriorDesiredFacets=exterior_of_degree(desiredFacets,6)
+exteriorFacetIndices=[i for i in range(len(desiredFacets)) if desiredFacets[i] in exteriorDesiredFacets]
+print desiredFacets
+print exteriorFacetIndices
+print len(desiredFacets)
+print len(exteriorDesiredFacets)
+︡e42c8e8f-1a1c-4221-aa22-a4f8753a68b7︡{"stdout":"[[1, 2, 3, 4, 5, 6, 7, 8, 9], [1, 2, 3, 4, 5, 6, 7, 9, 10], [1, 2, 3, 4, 5, 6, 7, 10, 11], [1, 2, 3, 4, 5, 6, 7, 11, 12], [1, 2, 3, 4, 5, 6, 7, 12, 13], [1, 2, 3, 4, 5, 7, 8, 9, 10], [1, 2, 3, 4, 5, 7, 8, 10, 11], [1, 2, 3, 4, 5, 8, 9, 10, 11], [1, 2, 3, 4, 5, 7, 8, 11, 12], [1, 2, 3, 4, 5, 8, 9, 11, 12], [1, 2, 3, 5, 6, 7, 8, 9, 10], [1, 2, 3, 5, 6, 7, 8, 10, 11], [1, 2, 3, 5, 6, 8, 9, 10, 11], [1, 2, 3, 6, 7, 8, 9, 10, 11], [1, 2, 3, 5, 6, 7, 8, 11, 12]]\n[0, 4, 9, 13, 14]\n15\n5\n"}︡
 ︠554e8b08-eb31-4786-b638-d83f137fc0e0︠
 ︠f686a673-2a08-43eb-9ef6-b56e56bd7c1b︠
 
@@ -308,15 +341,19 @@ def rational_cyclic_polytope(dimension, base_points):
 #do computations with, guided by the intuition from the paper by Billera and Lee.
 
 def BilleraLeePolytope(g_vector, dimension):
-    vertices = g_vector[1] + dimension + 1
+    numVertices = g_vector[1] + dimension + 1
     stopPoint = sum(g_vector)
     #print stopPoint
 
     #This is the simplicial complex that we want to find via a line shelling
-    facets = ball_constructor(g_vector, dimension)
+    desiredFacets = ball_constructor(g_vector, dimension)
+
+    #Here we note the "exterior degree" of the desired Facets
+    desiredFacetDegrees=[exteriorDegree(face,desiredFacets) for face in desiredFacets]
+    print desiredFacetDegrees
 
     #Here we construct the cyclic polytope that we will shell
-    vertex_base = [stopPoint^(i) for i in range(vertices)]
+    vertex_base = [stopPoint^(i) for i in range(numVertices)]
     #print vertex_base
     Q = rational_cyclic_polytope(dimension+1, vertex_base)
     #print Q.vertices_list()
@@ -327,8 +364,8 @@ def BilleraLeePolytope(g_vector, dimension):
     desiredFacetCenters = []
     desiredFacetInequalities = []
     ieqList=Q.inequalities_list()[:]
-    for i in range(len(facets)):
-        polytopeFacet = [vertex_base[j-1] for j in facets[i]]
+    for i in range(len(desiredFacets)):
+        polytopeFacet = [vertex_base[j-1] for j in desiredFacets[i]]
         P = rational_cyclic_polytope(dimension+1, polytopeFacet)
         targetVertices=P.vertices_list()[:]
         inequality=[]
@@ -346,9 +383,10 @@ def BilleraLeePolytope(g_vector, dimension):
 
     #We want a shelling that only captures the facets with centers in desiredFacetCenters.
     #We need to choose a starting point and direction that accomplishes this...
+    #This has proven elusive so far.
     polytopeCenter=list(Q.center())
     averageCenter=[sum(i)/len(desiredFacetCenters) for i in zip(*desiredFacetCenters)]
-    directionList=[[d[j]/d[0]-averageCenter[j]/d[0] for j in range(dimension+1)] for d in desiredFacetCenters]
+    directionList=[[d[j]/d[0]-averageCenter[j]/d[0] for j in range(dimension+1)] for d in desiredFacetCenters if desiredFacetDegrees[desiredFacetCenters.index(d)] >= 8]
     #directionList.append([(1-averageCenter[k]) for k in range(dimension+1)])
     #print directionList
     print averageCenter
@@ -359,10 +397,12 @@ def BilleraLeePolytope(g_vector, dimension):
     preDirection = [sum(i) for i in zip(*directionList)]
     #preDirection = [-sum(i) for i in zip(*desiredFacetInequalities)]
     direction = [preDirection[i]-perturbationVector1[i] for i in range(dimension+1)]
-    startingPoint = [preStartingPoint[i]-perturbationVector2[i] for i in range(dimension+1)]
+    startingPoint = [specialVertex[i]-perturbationVector2[i] for i in range(dimension+1)]
     #print startingPoint
     #print direction
-
+    directions=[d for d in desiredFacetInequalities if desiredFacetDegrees[desiredFacetInequalities.index(d)] >= 5]
+    preDirection = [sum(i) for i in zip(*directions)]
+    direction = [preDirection[i]-perturbationVector1[i] for i in range(dimension+1)]
 
 
     #weightList = []
@@ -432,7 +472,7 @@ def BilleraLeePolytope(g_vector, dimension):
 
 
 BilleraLeePolytope([1,4,5,5,0],8)
-︡9ff4f6b8-bec7-4b59-95dc-a856c3e75ed9︡{"stdout":"[11942009262241/9, 1147436145919276337223894601/9, 145826808414745895549872188951322417644001/9, 18894354893777116826184036213817600311300087964965285001/9, 2451247387632267087864267798139939800485876868204951063986416494900001/9, 318038417329841963265357999658460271236128317726673660234944172858926239060314125001/9, 41264303051351914414003391843513762822216947808825585467497813757774320556213158423052789477500001/9, 5353892060291482213479368418903808853555409623212915042448805289693174238500646974351159638629209971773803125001/9, 694647887019656087867617578876720457809539331847226137806397421164223267553989028590323640914540949600753235513645210562500001/9]"}︡{"stdout":"\n"}︡{"tex":{"tex":"\\left[1, 4, 10, 15, 15, 15, 10, 4, 1\\right]","display":true}}︡{"tex":{"tex":"\\left[1, 3, 6, 5, 0\\right]","display":true}}︡
+︡f2cfd84f-240f-4de9-8d30-d37ffd05cf53︡{"stdout":"[6, 5, 5, 5, 8, 4, 4, 5, 5, 7, 3, 3, 5, 6, 6]"}︡{"stdout":"\n[11942009262241/9, 1147436145919276337223894601/9, 145826808414745895549872188951322417644001/9, 18894354893777116826184036213817600311300087964965285001/9, 2451247387632267087864267798139939800485876868204951063986416494900001/9, 318038417329841963265357999658460271236128317726673660234944172858926239060314125001/9, 41264303051351914414003391843513762822216947808825585467497813757774320556213158423052789477500001/9, 5353892060291482213479368418903808853555409623212915042448805289693174238500646974351159638629209971773803125001/9, 694647887019656087867617578876720457809539331847226137806397421164223267553989028590323640914540949600753235513645210562500001/9]"}︡{"stdout":"\n"}︡{"tex":{"tex":"\\left[1, 5, 13, 15, 15, 15, 13, 5, 1\\right]","display":true}}︡{"tex":{"tex":"\\left[1, 4, 8, 2, 0\\right]","display":true}}︡
 ︠5d14a65a-a635-4b40-ba59-38c54316f186︠
 ︠eeee17d2-c96a-41f4-9df1-cf141111c4a7︠
 
